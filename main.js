@@ -5,21 +5,13 @@ const telegramBot = require("./localModules/telegramBot/telegramBot");
 //creation of bot
 const tlBot = telegramBot.createBot(token);
 
-tlBot.addCommand("command1", function(message){
-    //do something in reaction to the message
-    console.log('executing command 1')
-    //maybe send a message in response
-    tlBot.sendMessage(message.chat.id, 'example text');
-})
-
-tlBot.addCommand("command2", function(message){
-    //do something in reaction to the message
-    console.log('executing command 2')
-})
-
-tlBot.addExternalCommand("extcmd1", function(body){
-    //do something with the request body
-    console.log('executing external command 1', body)
+tlBot.addExternalCommand("new_availabilities", function(body){
+    let text = `new availabilities detected for the ${body.date}:\n`
+    body.availabilities.forEach((row) => {
+        text += `- ${row.name} (${row.size}m²): from ${row.start_time} to ${row.end_time}\n`
+    })
+    text += `\nGo to ${body.url} to make a reservation`
+    tlBot.sendMessage(body.to, text)
 })
 
 exports.entryPoint = tlBot.entryPoint
